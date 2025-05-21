@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-image: url('https://www.fujitsu.com/in/imagesgig5/locations-800x450_tcm87-6306711_tcm87-6286607-32.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+        .button-container {
+            margin: 10px;
+        }
+        .button {
+            display: block;
+            width: 300px;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Click Counter Style */
+        #clickCounter {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+    <script>
+        function toggleF5Selection() {
+            document.getElementById("f5Selection").classList.toggle("hidden");
+        }
+
+        function openF5Link() {
+            const select = document.getElementById("f5LoadBalancer");
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value) {
+                window.open(`https://${selectedOption.value}`, '_blank');
+                countClick(); // Count the click
+            }
+        }
+
+        function toggleFirewallSelection() {
+            document.getElementById("firewallSelection").classList.toggle("hidden");
+        }
+        
+        function openFirewallLink() {
+            const select = document.getElementById("firewallList");
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value) {
+                window.open(`https://${selectedOption.value}`, '_blank');
+                countClick(); // Count the click
+            }
+        }
+
+        
+
+        function toggleSwitchSelection() {
+            document.getElementById("switchSelection").classList.toggle("hidden");
+        }
+		
+		function toggleWLCSelection() {
+            document.getElementById("wlcSelection").classList.toggle("hidden");
+        }
+
+        function openWLCLink() {
+            const select = document.getElementById("wlcList");
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption.value) {
+                window.open(`https://${selectedOption.value}`, '_blank');
+                countClick(); // Count the click
+            }
+        }
+
+        function updateSwitchList() {
+            const site = document.getElementById("siteList").value;
+            const switchList = document.getElementById("switchList");
+            switchList.innerHTML = "";
+
+            if (site && switches[site]) {
+                switches[site].forEach(switchName => {
+                    const listItem = document.createElement("li");
+                    const link = document.createElement("a");
+                    link.href = `https://${switchName}`;
+                    link.target = "_blank";
+                    link.textContent = switchName;
+                    listItem.appendChild(link);
+                    switchList.appendChild(listItem);
+                });
+            }
+        }
+		
+		
+        // Initialize Click Counter
+        let clickCount = localStorage.getItem("clickCount") || 0;
+
+        function updateClickCounter() {
+            document.getElementById("clickCounter").innerText = `Total Clicks: ${clickCount}`;
+        }
+
+        function countClick() {
+            clickCount++;
+            localStorage.setItem("clickCount", clickCount);
+            updateClickCounter();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            updateClickCounter();
+            document.querySelectorAll(".button, a").forEach(element => {
+                element.addEventListener("click", countClick);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="clickCounter">Total Clicks: 0</div>
+    
+    <h2>MHC Network Links</h2>
+    <div class="button-container">
+	    <a class="button" href="https://dnacenter.mhc.molnlycke.net/" target="_blank">DNA Center</a>
+        <a class="button" href="https://nl-int-cpi04.mhc.molnlycke.net/" target="_blank">Cisco Prime</a>
+		<a class="button" href="file:///E:/Network/MHC_Network/Data/Switchlist.html.html" target="_blank">Cisco Switches</a>
+		<button class="button" onclick="toggleWLCSelection()">WLC Controllers</button>
+        <div id="wlcSelection" class="hidden">
+            <select id="wlcList">
+                <option value="">Select a WLC</option>
+                <option value="10.242.1.2">5520 - us-nyc-wlc01</option>
+                <option value="10.244.33.130">5520 - cz-hav-wlc01</option>
+                <option value="10.245.241.40">9800 - nl-int-wlc02.mhc.molnlycke.net</option>
+                <option value="10.246.65.10">5520 - my-kul-wlc02</option>
+                <option value="10.246.65.14">9800 - my-kh-vwlc01.mhc.molnlycke.net</option>																				
+            </select>
+            <button onclick="openWLCLink()">Go</button>
+        </div>
+		<a class="button" href="file:///C:/Users/sezsuih/Desktop/MHC_Network/Data/IPHelper.html" target="_blank">DHCP Server</a>
+        <a class="button" href="https://azweufortiman/p/login/?next=%2Fp%2Fapp%2F" target="_blank">FortiManager</a>
+        <a class="button" href="https://azweufortiana/p/app/#!/adom/home" target="_blank">FortiAnalyser</a>
+        <a class="button" href="https://nl-int-ise01.mhc.molnlycke.net/admin/login.jsp" target="_blank">Cisco ISE Prod</a>
+        <a class="button" href="https://nl-int-isegst01.mhc.molnlycke.net/admin/login.jsp" target="_blank">Cisco ISE Guest</a>
+        <a class="button" href="https://molnlycke-orchestrator.nfv.gtt.net/" target="_blank">SilverPeak SDWAN</a>
+        <a class="button" href="https://portal.nfv.gtt.net/RDWeb" target="_blank">PA Panorama</a>
+        <a class="button" href="https://ipam.mhc.molnlycke.net/index.php?page=login" target="_blank">IPAM</a>
+        <button class="button" onclick="toggleF5Selection()">F5 Load Balancers</button>
+        <div id="f5Selection" class="hidden">
+            <select id="f5LoadBalancer">
+                <option value="">Select an F5 Load Balancer</option>
+                <option value="10.244.2.4">10.244.2.4 - ISE, RADIUS - EMEA</option>
+                <option value="10.244.2.5">10.244.2.5 - ISE, RADIUS - EMEA</option>
+                <option value="10.242.2.4">10.242.2.4 - ISE, RADIUS - AMAR</option>
+				<option value="10.242.2.5">10.242.2.5 - ISE, RADIUS - AMAR</option>
+				<option value="10.247.2.4">10.247.2.4 - ISE, RADIUS - APAC</option>
+				<option value="10.247.2.5">10.247.2.5 - ISE, RADIUS - APAC</option>
+            </select>
+            <button onclick="openF5Link()">Go</button>
+        </div>
+        <button class="button" onclick="toggleFirewallSelection()">Firewalls</button>
+        <div id="firewallSelection" class="hidden">
+            <select id="firewallList">
+                <option value="">Select a Firewall</option>
+                <option value="10.243.33.8">at-sal-ftg01</option>
+                <option value="10.246.200.1">au-warehouse-ftg01</option>
+				<option value="10.246.200.1">au-warehouse-ftg01</option>
+				<option value="10.244.67.100">be-war-ftg01</option>
+				<option value="10.246.168.198">cn-bei-ftg01</option>
+				<option value="10.244.33.40">cz-hav-ftg01</option>
+				<option value="10.245.123.150">cz-kar-ftg01</option>
+				<option value="10.245.176.245">dk-hrs-ftg01</option>
+				<option value="10.245.140.221">fi-mik-ftg01</option>
+				<option value="10.244.112.245">gb-old-ftg01</option>
+				<option value="10.246.64.241">my-kh-ftg01</option>
+				<option value="10.245.107.140">my-kk-ftg01</option>
+				<option value="10.245.105.170">my-kul-ftg01</option>
+				<option value="10.245.15.243">se-got-ftg01</option>
+				<option value="10.240.30.10">se-vax-fgt01</option>
+				<option value="10.245.95.140">th-ban-ftg01</option>
+				<option value="10.245.97.150">th-cho-ftg01</option>
+				<option value="10.242.152.201">us-and-ftg01</option>
+				<option value="10.242.32.100">us-bos-ftg01</option>
+				<option value="10.245.192.100">us-bru-ftg01</option>
+				<option value="10.245.67.201">us-nor-ftg01</option>
+				<option value="10.240.128.149">az-eus-ftg01</option>
+				<option value="10.240.160.149">az-sas-ftg01</option>
+				<option value="10.240.0.149">az-weu-ftg01</option>
+            </select>
+            <button onclick="openFirewallLink()">Go</button>
+			<button onclick="openPuTTY()">SSH</button> <!-- Added SSH button -->
+        </div>
+		
+		<script>
+            function openPuTTY() {
+                const select = document.getElementById("firewallList");
+                const ip = select.value.trim(); 
+
+                if (!ip) {
+                alert("Please select a firewall first.");
+                return;
+                }
+
+                window.location.href = `ssh://${ip}`;
+            }
+        </script>
+        <a class="button" href="https://ethervision.gtt.net/sign-in" target="_blank">GTT Ethervision</a>
+    </div>
+</body>
+</html>
