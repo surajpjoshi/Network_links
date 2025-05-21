@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://source.unsplash.com/1600x900/?cybersecurity,data-center') no-repeat center center fixed;
+            background-size: cover;
+            margin: 20px;
+            text-align: center;
+            color: white;
+        }
+        h2 {
+            font-size: 28px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            color: white;
+        }
+        th, td {
+            border: 1px solid #555;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #17a2b8;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        select {
+            margin: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #welcomeMessage {
+            font-size: 22px;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+    </style>
+    <script>
+        function downloadRDP(ip) {
+            if (ip !== 'NA' && ip !== '') {
+                const rdpContent = `
+                screen mode id:i:2
+                desktopwidth:i:1920
+                desktopheight:i:1080
+                session bpp:i:32
+                full address:s:${ip}
+                audiomode:i:2
+                redirectprinters:i:1
+                redirectclipboard:i:1
+                autoreconnection enabled:i:1
+                `;
+                
+                const blob = new Blob([rdpContent], { type: 'application/rdp' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${ip}.rdp`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                alert('No valid RDP IP available');
+            }
+        }
+
+        function filterTable() {
+            const selectedSite = document.getElementById("siteFilter").value;
+            const table = document.getElementById("rdpTable");
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            
+            if (selectedSite === "All") {
+                table.style.display = "none";
+                welcomeMessage.style.display = "block";
+            } else {
+                table.style.display = "table";
+                welcomeMessage.style.display = "none";
+                const rows = document.querySelectorAll("table tr");
+                rows.forEach((row, index) => {
+                    if (index === 0) return;
+                    row.style.display = row.cells[0].innerText.includes(selectedSite) ? (Array.from(row.cells).slice(1).some(cell => cell.innerText.trim() !== 'NA')) ? "" : "none" : "none";
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>IP Helper table</h2>
+    <label for="siteFilter">Filter by Site:</label>
+    <select id="siteFilter" onchange="filterTable()">
+        <option value="All">All</option>
+    </select>
+    <p id="welcomeMessage">Welcome! Please select a site to view the IP Helper table.</p>
+    <table id="rdpTable">
+        <tr id="tableHeader">
+            <th>Site Name</th>
+        </tr>
+        <script>
+            const data = `
+ae-dub 10.244.2.44 10.244.2.45 10.244.136.141
+at-vie 10.244.2.44 10.244.2.45 10.244.232.141
+at-vie 10.244.2.44 10.244.2.45 10.244.232.141
+au-syd 10.247.2.25 10.247.2.26 10.246.152.141
+be-ant 10.244.2.44 10.244.2.45 10.244.184.141
+br-sao 10.242.128.200 10.242.128.201 10.242.128.203 10.242.2.26 10.242.2.27 10.242.128.221
+ca-oak 10.242.2.26 10.242.2.27 10.242.184.141
+ch-die 10.244.2.44 10.244.2.45 10.244.2.95
+cl-san 10.242.2.26 10.242.2.27 10.242.120.130 10.244.2.44 10.244.2.45
+cn-bei 10.247.2.25 10.247.2.26 10.246.168.141
+cn-sha 10.247.2.25 10.247.2.26
+cz-hav 10.244.2.44 10.244.34.29 10.244.34.30
+cz-kar 10.244.2.44 10.244.82.123 10.244.82.122
+cz-pra 10.244.2.44 10.244.2.45 10.244.208.141
+dk-all 10.244.2.44 10.244.2.45 10.244.2.95
+es-mad 10.244.2.44 10.244.2.45 10.244.176.141
+fi-hel 10.244.2.44 10.244.2.45 10.245.140.105
+fi-mik 10.244.2.44 10.245.140.105
+fr-lin 10.244.2.44 10.244.2.45 10.244.160.141
+gb-dun 10.244.2.44 10.244.2.45 10.245.40.121
+gb-old 10.244.2.44 10.244.112.221 10.244.112.220 10.245.34.22
+hu-bud 10.244.2.44 10.244.2.45 10.244.200.141
+it-gal 10.244.2.44 10.244.2.45 10.244.169.121
+jp-tok 10.247.2.25 10.247.2.26 10.246.160.141
+kr-seo 10.247.2.25 10.247.2.26 10.246.176.141
+lt-vil 10.244.2.44 10.244.2.45
+my-kk 10.247.2.25 10.247.2.26
+my-kua 10.247.2.25 10.247.2.26 10.246.144.141
+my-kul 10.247.2.25 10.245.105.188
+nl-utr 10.244.2.44 10.244.2.45
+no-osl 10.244.2.44 10.244.2.45 10.245.80.141
+pl-waw 10.244.2.44 10.244.2.45 10.244.192.141
+sa-jed 10.244.2.44 10.244.152.141 10.244.2.45
+se-got 10.244.2.44 10.245.10.30
+sg-sin 10.247.2.25 10.247.2.26 10.246.128.221
+th-ban 10.247.2.25 10.245.95.122
+th-bnk 10.247.2.25 10.245.95.122 10.246.184.130
+th-cho 10.247.2.25 10.245.97.197
+us-and 10.242.2.26 10.245.79.122
+us-bos 10.242.2.26 10.242.32.25
+us-nor 10.242.2.26 10.245.64.137
+...`.split('\n');
+            
+            let siteSet = new Set();
+            let rowsData = [];
+            
+            data.forEach(row => {
+                let columns = row.split(' ');
+                if (columns.slice(1).some(col => col !== 'NA')) {
+                    siteSet.add(columns[0]);
+                    let rowHTML = '<tr>';
+                    rowHTML += `<td>${columns[0]}</td>`;
+                    columns.slice(1).forEach((col, index) => {
+                        rowHTML += col !== 'NA' ? `<td>${col} <button onclick="downloadRDP('${col}')">RDP</button></td>` : `<td style="display: none;"></td>`;
+                    });
+                    rowHTML += '</tr>';
+                    rowsData.push(rowHTML);
+                }
+            });
+            document.write(rowsData.join(''));
+            
+            let siteFilter = document.getElementById("siteFilter");
+            siteSet.forEach(site => {
+                let option = document.createElement("option");
+                option.value = site;
+                option.text = site;
+                siteFilter.appendChild(option);
+            });
+        </script>
+    </table>
+</body>
+</html>

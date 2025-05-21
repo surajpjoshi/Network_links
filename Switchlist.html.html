@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco Switches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"], button {
+            padding: 8px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            margin: 0 auto;
+            width: 60%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: linear-gradient(to right, #007BFF, #0056b3);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        td {
+            padding: 5px; /* Reduced row height */
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .ssh-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .ssh-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>MHC Cisco Switches</h2>
+
+    <div class="input-container">
+        <input type="file" id="fileInput">
+    </div>
+
+    <div class="input-container">
+        <label>Enter site prefixes:</label>
+        <input type="text" id="siteFilterInput" placeholder="e.g. be-war, be-ant, th-ban">
+        <button onclick="displayDevices()">Filter</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Switch Name</th>
+                <th>IP Address</th>
+                <th>SSH</th>
+            </tr>
+        </thead>
+        <tbody id="device-list">
+            <tr><td colspan="3">Please select a file.</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        let allDevices = [];
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                allDevices = e.target.result.split('\n').map(line => line.trim()).filter(line => line);
+                displayDevices();
+            };
+            reader.readAsText(file);
+        });
+
+        function displayDevices() {
+            const filterInput = document.getElementById('siteFilterInput').value.trim();
+            const filters = filterInput ? filterInput.split(',').map(site => site.trim()) : [];
+
+            const filteredDevices = filters.length
+                ? allDevices.filter(line => filters.some(filter => line.startsWith(filter)))
+                : allDevices;
+
+            const tableBody = document.getElementById('device-list');
+            tableBody.innerHTML = "";
+
+            if (filteredDevices.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3">No matching devices found.</td></tr>';
+                return;
+            }
+
+            filteredDevices.forEach(line => {
+                const [switchName, ip] = line.split(/\s+/);
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${switchName}</td>
+                        <td>${ip}</td>
+                        <td><button class="ssh-button" onclick="openPutty('${ip}')">SSH</button></td>
+                    </tr>`;
+            });
+        }
+
+        function openPutty(ip) {
+            window.location.href = `ssh://${ip}`;
+        }
+    </script>
+
+</body>
+</html>
